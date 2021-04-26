@@ -1,0 +1,117 @@
+# Copyright 2020 Pivotal Software, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+version: 1
+name: csb-aws-ses
+id: b90ace67-954b-4b33-8f84-95cacc55b94c
+description: AWS SES
+display_name: AWS SES
+image_url: https://www.pikpng.com/pngl/m/107-1078218_aws-ses-logo-png-transparent-ses-aws-clipart.png
+documentation_url: https://aws.amazon.com/ses/
+support_url: https://aws.amazon.com/ses/
+tags: [aws, ses, preview]
+plan_updateable: true
+plans:
+provision:
+  plan_inputs:
+  user_inputs:
+    - field_name: region
+      type: string
+      details: The region of the SES service.
+      default: us-east-1
+      enum:
+        us-east-2 : us-east-2
+        us-east-1 : us-east-1
+        us-west-1 : us-west-1
+        us-west-2 : us-west-2
+        ap-east-1 : ap-east-1
+        ap-south-1 : ap-south-1
+        ap-northeast-3 : ap-northeast-3
+        ap-northeast-2 : ap-northeast-2
+        ap-southeast-1 : ap-southeast-1
+        ap-southeast-2 : ap-southeast-2
+        ap-northeast-1 : ap-northeast-1
+        ca-central-1 : ca-central-1
+        cn-north-1 : cn-north-1
+        cn-northwest-1 : cn-northwest-1
+        eu-central-1 : eu-central-1
+        eu-west-1 : eu-west-1
+        eu-west-2 : eu-west-2
+        eu-west-3 : eu-west-3
+        eu-north-1 : eu-north-1
+        me-south-1 : me-south-1
+        sa-east-1 : sa-east-1
+    - field_name: aws_access_key_id
+      type: string
+      details: AWS access key
+      default: ${config("aws.access_key_id")}
+    - field_name: aws_secret_access_key
+      type: string
+      details: AWS secret key
+      default: ${config("aws.secret_access_key")}
+    - field_name: domain
+      type: string
+      details: AWS SES Domain Identity
+      # default: ${config("aws.secret_access_key")}
+      default: "ssb-dev.datagov.us"
+  computed_inputs:
+  - name: labels
+    default: ${json.marshal(request.default_labels)}
+    overwrite: true
+    type: object
+  template_refs:
+    main: terraform/ses/provision/main.tf
+    outputs: terraform/ses/provision/outputs.tf
+    provider: terraform/ses/provision/provider.tf
+    variables: terraform/ses/provision/variables.tf
+  outputs:
+  - field_name: region
+    type: string
+    details: AWS region for the SES
+bind:
+  plan_inputs: []
+  user_inputs:
+  - field_name: aws_access_key_id
+    type: string
+    details: AWS access key
+    default: ${config("aws.access_key_id")}
+  - field_name: aws_secret_access_key
+    type: string
+    details: AWS secret key
+    default: ${config("aws.secret_access_key")}
+  computed_inputs:
+  - name: region
+    default: ${instance.details["region"]}
+    overwrite: true
+    type: string
+  - name: user_name
+    default: csb-${request.binding_id}
+    overwrite: true
+    type: string
+  template_refs:
+    main: terraform/ses/bind/main.tf
+    outputs: terraform/ses/bind/outputs.tf
+    provider: terraform/ses/bind/provider.tf
+    variables: terraform/ses/bind/variables.tf
+  outputs:
+  - field_name: ses_smtp_server
+    type: string
+    details: AWS SES SMTP server
+  - field_name: ses_smtp_user
+    type: string
+    details: AWS SES SMTP user
+  - field_name: ses_smtp_password
+    type: string
+    details: AWS SES SMTP password
+examples:
