@@ -23,6 +23,11 @@ support_url: https://aws.amazon.com/ses/
 tags: [aws, ses, preview]
 plan_updateable: true
 plans:
+- name: common
+  id: dc109a6e-c4a8-4fbb-8c49-acf9740ab819
+  description: 'Amazon Simple Email Service (SES) is a pay-as-you-go service based on the volume of emails sent and received.'
+  display_name: "common"
+  properties:
 provision:
   plan_inputs:
   user_inputs:
@@ -115,3 +120,8 @@ bind:
     type: string
     details: AWS SES SMTP password
 examples:
+- name: ses
+  description: SES common
+  plan_id: dc109a6e-c4a8-4fbb-8c49-acf9740ab819
+  provision_params: {}
+  bind_params: {}
